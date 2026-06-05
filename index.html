@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Download Python Files</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  body {
+    margin: 0;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+  }
+  button {
+    background: #4ade80;
+    color: #000;
+    border: none;
+    padding: 18px 48px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.5; cursor: default; }
+</style>
+</head>
+<body>
+<button id="btn" onclick="go()">⬇ Download All 18 Files</button>
+<script>
+const FILES = [
+  "studentadt.py","Sorts.py","Mergesort.py","exp21.py","exp23.py",
+  "exp22.py","exp19.py","exp20.py","exp17.py","exp18.py",
+  "exp15.py","exp14.py","exp9.py","exp5.py","exp6.py",
+  "EmployeeAdt.py","enployeeadt.py","BinarySearch.py"
+];
+
+async function go() {
+  const btn = document.getElementById("btn");
+  btn.disabled = true;
+  btn.textContent = "Packaging…";
+  const zip = new JSZip();
+  await Promise.all(FILES.map(f => fetch(f).then(r => r.blob()).then(b => zip.file(f, b))));
+  const blob = await zip.generateAsync({ type: "blob" });
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "python_files.zip" });
+  a.click();
+  btn.textContent = "✓ Done!";
+}
+</script>
+</body>
+</html>
